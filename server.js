@@ -7,6 +7,7 @@ const server = net.createServer((socket)=>{
     data = data.toString();
     let endOfRequestURI = data.indexOf(' ', 4);
     let requestURI = data.slice(4, endOfRequestURI);
+    let currentDate = new Date().toUTCString();
 
     fs.readFile('.'+ requestURI, (err, data) => {
       if(err){
@@ -14,11 +15,13 @@ const server = net.createServer((socket)=>{
           let body = data.toString();
           let output =
             `HTTP/1.0 404 NotFound
-            Content-length: ${body.length}
+            Content-Length: ${body.length}
             Connection: keep-alive
+            Date: ${currentDate};
 
             ${body}`;
           socket.write(output);
+          socket.end();
         });
 
       }else{
